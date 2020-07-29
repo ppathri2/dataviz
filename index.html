@@ -82,7 +82,15 @@
 			margin-left: -15px;
 		}
 		option {
-			margin-left:20px;
+			margin-left:50px;
+		}
+		.selection {
+
+			margin-left:400px;
+		}
+		.span {
+		  display: inline-block;
+		  font-size: larger;
 		}
 	</style>
 
@@ -105,8 +113,8 @@
 		<br><b>North American</b> region followed closely with new confirmed cases raising in the month of April 2020 in US and Canada<br>
 		Agressive lockdown measures and suspension of travel in China contained the spread of the virus in East Asia Pacific region<br>
 		Social Distancing, Quarantine efforts, lockdown and suspension of International Travel in  Europe & Central Asia and North American regions showed a downward trend in the month of May, 2020<br>
-		<b>Latin America & Caribbean</b> region recorded peak new confirmed cases in the month of June, 2020 with highest cases recorded in Brazil, Chile, Peru, Mexico<br>
-		New Coronavirus cases began to raise again in July, 2020 in North American region following the lifting of lockdown in some US states <br>
+		<b>Latin America & Caribbean</b> region recorded peak new confirmed cases in the month of July, 2020 with highest cases recorded in Brazil, Chile, Peru, Mexico<br>
+		New Coronavirus cases began to raise back in July, 2020 in North American region following the lift of lockdown in some US states <br>
 		Slow but steady raise in new cases is being recorded in <b>Middle East & North Africa, South Asia and Sub-Saharan Africa</b> regions
 		</p>
 
@@ -115,38 +123,46 @@
 		<h6><strong>Report Trends:</strong></h6>
 		<p> Below report show the reader the following trends
 					<ol  style="font-size:14px">
-					<li><strong>Trend of Covid-19 New Confirmed cases by Month</strong></li>
-					<li><strong>Trend of Covid-19 New Deaths by Month</strong></li>
-					<li><strong>Trend of Covid-19 New Recovered cases by Month</strong></li>
+					<li><strong>Trend of Covid-19 Confirmed cases by Month - New each month or cummulative </strong></li>
+					<li><strong>Trend of Covid-19 Deaths by Month - New each month or cummulative</strong></li>
+					<li><strong>Trend of Covid-19 Recovered cases by Month - New each month or cummulative</strong></li>
 
 			</ol>
-			Reader can click on the buttons below to view the repsective trend, filter by clicking on the legend and mouseover datapoint to view additional details
+			<font color="red" size ="2">Reader can click on the buttons below, select from dropdown, to view the repsective covid-19 trend. Filter by clicking on the legend or mouseover datapoint to view additional details</font>
 		</p>
 		</br>
 	</div>
 
 	<div class="container-fluid">
-		<h6><strong>Select the aspect you are interested in:</strong></h6>
+		<h6><strong>Select the Trend you are interested in:</strong></h6>
 
 		<div id="option">
 			<input name="ConfirmedButton"
 					type="button"
 					class ="btn btn-info"
 					value="Confirmed"
-					onclick="confirmedData()" />
+					onclick="trendData(['New Confirmed Cases', 'New Confirmed Cases', 'Cummulative Confirmed Cases', 'Confirmed'])" />
 
 			<input name="DeathsButton"
 					type="button"
 					class ="btn btn-info"
 					value="Deaths"
-					onclick="deathsData()" />
+					onclick="trendData(['New Deaths', 'New Deaths', 'Cummulative Deaths', 'Deaths'])" />
 
 			<input name="RecoveredButton"
 					type="button"
 					class ="btn btn-info"
 					value="Recovered"
-					onclick="recoveredData()" />
+					onclick="trendData(['New Recovered Cases', 'New Recovered Cases', 'Cummulative Recovered Cases', 'Recovered'])" />
+
+			&emsp;<select id="selectButton"></select>&emsp;&emsp;&emsp;<span >  </span>
+
 		</div>
+
+
+		<!-- Initialize a select button -->
+
+
 
 		<script>
 			//Set Margin
@@ -163,26 +179,51 @@
 
 
 			// Define Axes
-			var tickLabels = ['Jan','Feb','Mar','Apr','May','Jun','Jul']
+			var tickLabels = ['1/31','2/29','3/31','4/30','5/31','6/30','7/26']
 			var xAxis = d3.axisBottom().scale(x).ticks(7).tickFormat(function(d,i){return tickLabels[i];});
 			var yAxis = d3.axisLeft().scale(y).ticks(15);
 
-			// Define Confirmed Cases Line (Confirmed vs Month)
+			const transitionPath = d3
+					.transition()
+					.ease(d3.easeSin)
+					.duration(2500);
+
+			// Define Confirmed Cases Line (New Confirmed Cases)
 			var confirmedline = d3.line()
 				.x(function(d) { return x(d.Month); })
 				.y(function(d) { return y(d.Confirmed); })
 				.curve(d3.curveMonotoneX);
 
-			// Define No of Deaths Line (Deaths vs Month)
+			// Define Confirmed Cases Line (Commulative Confirmed Cases)
+			var confirmedline_t = d3.line()
+				.x(function(d) { return x(d.Month); })
+				.y(function(d) { return y(d.Confirmed_tm); })
+				.curve(d3.curveMonotoneX);
+
+			// Define No of Deaths Line (New Deaths)
 			var deathline = d3.line()
 				.x(function(d) { return x(d.Month); })
 				.y(function(d) { return y(d.Deaths); })
 				.curve(d3.curveMonotoneX);
 
-			// Define Recovery Cases Line (Recovered Cases vs Month)
+			// Define No of Deaths Line (Cummulative Deaths)
+			var deathline_t = d3.line()
+				.x(function(d) { return x(d.Month); })
+				.y(function(d) { return y(d.Deaths_t); })
+				.curve(d3.curveMonotoneX);
+
+
+			// Define Recovery Cases Line (New Recovered Cases)
 			var recoveredline = d3.line()
 				.x(function(d) { return x(d.Month); })
 				.y(function(d) { return y(d.Recovered); })
+				.curve(d3.curveMonotoneX);
+
+
+			// Define Recovery Cases Line (Cummulative Recovered Cases)
+			var recoveredline_t = d3.line()
+				.x(function(d) { return x(d.Month); })
+				.y(function(d) { return y(d.Recovered_t); })
 				.curve(d3.curveMonotoneX);
 
 			// Defile ToolTip
@@ -198,15 +239,40 @@
 				.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
+			// add the options to the drop down
+			function selectddwn(allGroup,selectopt) {
+			d3.select("#selectButton").selectAll('option').remove();
+			d3.select("#selectButton")
+			  .selectAll('myOptions')
+				.data(allGroup)
+			  .enter()
+				.append('option')
+			  .text(function (d) { return d; }) // text showed in the menu
+			  .attr("value", function (d) { return d; }) // corresponding value returned by the button
+			  .property("selected", function(d){ return d === selectopt; })
+			}
+
 			// Parse Year
 			var parseDate = d3.timeParse("%B");
 
 			// Default load Covid Data
-			confirmedData();
+			var data_arr = ['New Confirmed Cases', 'New Confirmed Cases', 'Cummulative Confirmed Cases', 'Confirmed'];
+			trendData(data_arr);
+			scene = 1;
 
-			// Handle Covid button click
-			function confirmedData() {
+			//****************************            Handle New Confirmed Cases           ********************************//
+			function trendData(data_conf) {
 				svg.selectAll("*").remove();
+				var allGroup = data_conf.slice(1,3);
+				//alert(allGroup);
+				selectddwn(allGroup, data_conf[0]);
+
+			  var h1 = d3.select('span');
+			  h1.text("Covid-19 Trend "+data_conf[0]);
+			  h1.style('color','black');
+			  h1.style('font-size',"16px");
+			  h1.style('font-weight',"bold");
 
 				// Get the data again
 				d3.csv("data/covid.csv")
@@ -214,13 +280,35 @@
 					data.forEach(function(d) {
 						d.Month = d.Month;
 						d.Confirmed = +d.Confirmed;
-						d.Deaths = +d.Deaths
-						d.Recovered = +d.Recovered
+						d.Deaths = +d.Deaths;
+						d.Recovered = +d.Recovered;
+						d.Confirmed_tm = +d.Confirmed_tm;
+						d.Deaths_t = +d.Deaths_t;
+						d.Recovered_t = +d.Recovered_t;
+						d.Countries = d.Countries;
 					});
 
 				// Scale the range of data
 				x.domain(d3.extent(data, function(d) { return d.Month; }));
-				y.domain([0, d3.max(data, function(d) { return d.Confirmed; })]);
+				switch (data_conf[3]) {
+				  case 'Confirmed':
+					y.domain([0, d3.max(data, function(d) { return d.Confirmed; })]);
+					break;
+				  case 'Confirmed_t':
+					y.domain([0, d3.max(data, function(d) { return d.Confirmed_tm; })]);
+					break;
+				  case 'Deaths':
+					y.domain([0, d3.max(data, function(d) { return d.Deaths; })]);
+					break;
+				  case 'Deaths_t':
+					y.domain([0, d3.max(data, function(d) { return d.Deaths_t; })]);
+					break;
+				  case 'Recovered':
+					y.domain([0, d3.max(data, function(d) { return d.Recovered; })]);
+					break;
+				  case 'Recovered_t':
+				  	y.domain([0, d3.max(data, function(d) { return d.Recovered_t; })]);
+				}
 
 				// Nest the entries by Region
 				var dataNest = d3.nest()
@@ -228,21 +316,75 @@
 					.entries(data);
 
 					// Loop through each symbol/key
-					dataNest.forEach(function(d,i) {
-						svg.append("path")
-							.attr("class", "line")
-							.style("stroke", function() {
-							   return d.color = color(d.key); })
-							.attr("id", 'tag'+d.key.replace(/[\s\&]+/g, ''))
-							.attr("d", confirmedline(d.values));
+
+				dataNest.forEach(function(d,i) {
+					svg.append("path")
+						.attr("class", "line")
+						.style("stroke", function() {
+						   return d.color = color(d.key); })
+						.attr("id", 'tag'+d.key.replace(/[\s\&]+/g, ''))
+						.attr("d", function(){
+							switch (data_conf[3]) {
+							  case 'Confirmed':
+								return confirmedline(d.values);
+								break;
+							  case 'Confirmed_t':
+								return confirmedline_t(d.values);
+								break;
+							  case 'Deaths':
+								return deathline(d.values);
+								break;
+							  case 'Deaths_t':
+								return deathline_t(d.values);
+								break;
+							  case 'Recovered':
+								return recoveredline(d.values);
+								break;
+							  case 'Recovered_t':
+								return recoveredline_t(d.values);
+							}
+						});
+						/*var regions = ["SouthAsia", "EastAsiaPacific", "Sub-SaharanAfrica", "MiddleEastNorthAfrica"];
+						if(regions.indexOf(d.key.replace(/[\s\&]+/g, '')) !== -1){
+							var active   = d.active ? false : true,
+							newOpacity = active ? 0.05 : 1;
+							d3.select("#tag"+d.key.replace(/[\s\&]+/g, ''))
+								.transition().duration(100)
+								.style("opacity", newOpacity);
+
+							d.active = active;
+						}*/
+
+
 
 						// Add points with tooltips
+						tmonth = ['JAN','FEB','MAR','APR','MAY','JUN','JUL']
 						svg.selectAll("dot")
 							.data(data)
 						.enter().append("circle")
-							.attr("r", 3.5)
+							.attr("r", 3.0)
 							.attr("cx", function(d) { return x(d.Month); })
-							.attr("cy", function(d) { return y(d.Confirmed); })
+							.attr("cy", function(d) {
+							switch (data_conf[3]) {
+							  case 'Confirmed':
+								return y(d.Confirmed);
+								break;
+							  case 'Confirmed_t':
+								return y(d.Confirmed_tm);
+								break;
+							  case 'Deaths':
+								return y(d.Deaths);
+								break;
+							  case 'Deaths_t':
+								return y(d.Deaths_t);
+								break;
+							  case 'Recovered':
+								return y(d.Recovered);
+								break;
+							  case 'Recovered_t':
+								return y(d.Recovered_t);
+							}
+							})
 							.style("fill", "grey")
 							.on("mouseover", function(d) {
 								d3.select(this)
@@ -253,16 +395,15 @@
 									.style("opacity", 0.9);
 								div.html(
 										"Region: " + d.Region + "<br/>" +
-										"Month: " + d.Month + "<br/>" +
-										"Confirmed: " + d.Confirmed + " <br/>" +
-										"Deaths: " + d.Deaths + "<br/>" +
-										"Recovered: " + d.Recovered)
+										"New Cases in " + tmonth[d.Month-1] + " : Confirmed - " + d.Confirmed + ", Deaths - " + d.Deaths + ", Recovered - " + d.Recovered + " <br/>" +
+										"Cummulative Cases by " + tmonth[d.Month-1] + " : Confirmed - " + d.Confirmed_tm + ", Deaths - " + d.Deaths_t + ", Recovered - " + d.Recovered_t + " <br/>" +
+										"Most Impacted Countries: " + d.Countries)
 									.style("left", (d3.event.pageX) + "px")
 									.style("top", (d3.event.pageY - 28) + "px");
 							})
 							.on("mouseout", function(d) {
 								d3.select(this)
-									.attr("r", 3.5)
+									.attr("r", 3.0)
         							.style("fill", "grey");
 								div.transition()
 									.duration(500)
@@ -286,12 +427,14 @@
 								return d.color = color(d.key); })
 							.on("click", function(){
 								var active   = d.active ? false : true,
-								newOpacity = active ? 0.10 : 1;
+								newOpacity = active ? 0.05 : 1;
 								d3.select("#tag"+d.key.replace(/[\s\&]+/g, ''))
 									.transition().duration(100)
 									.style("opacity", newOpacity);
 								d.active = active;
 								});
+
+
 
 						var active = true;
 						svg.append("text")
@@ -303,7 +446,7 @@
 							.on("click", function(){
 							    active   = d.active ? false : true;
 								// alert("test"+d.active);
-								newOpacity = active ? 0.10 : 1;
+								newOpacity = active ? 0.05 : 1;
 								// alert("#tag"+d.key.replace(/[\s\&]+/g, ''));
 								d3.select("#tag"+d.key.replace(/[\s\&]+/g, ''))
 									.transition().duration(100)
@@ -313,42 +456,147 @@
 								})
 							.text(d.key);
 
-						// Annotations
-						const annotations = [
-						{note: {label: "Started in Wuhan, China(East Asia & Pacific Region) in late 2019. Named as Covid-19, the virus spread quickly and crossed regional boundaries. Agressive measures taken later locally, contained regional spread",
-								title: "Covid Outbreak", align: "left"},
-								x: 0, y: 500, dy: -50, dx: 20},
-						{note: {label: "International travel spread the Virus to other regions, first impacts are seen in Europe & Central Asia Region (UK, Spain, Italy, Turkey, France, Germany, Russia).",
-								title: "Inter-Regional Spread", align: "right"},
-								x: 277, y: 344, dy: -25, dx: 15},
-						{note: {label: "North American(US & Canada), Europe & Central Asia Regions, recorded high confirmed cases in the month of Apr 2020.",
-								title: "Spread to North American Region", align: "left"},
-								x: 415, y: 202, dy: -80, dx: -110},
-						{note: {label: "",
-								title: "", align: "left"},
-								x: 415, y: 179, dy: -57, dx: -110},
-						{note: {label: "Measures to control the spread of Virus through Social distancing & lockdowns started showing positive results.",
-								title: "Social Distancing", align: "Middle"},
-								x: 553, y: 286, dy: 0, dx: -190},
+						switch (data_conf[3]) {
+						case 'Confirmed':
+							// Annotations
+							const annotations = [
+							{note: {label: "Started in Wuhan, China(East Asia & Pacific Region) in late 2019. Named as Covid-19, the virus spread quickly and crossed regional boundaries. Agressive measures taken later locally, contained regional spread",
+									title: "Covid Outbreak", align: "left"},
+									x: 0, y: 500, dy: -50, dx: 20},
+							{note: {label: "International travel spread the Virus to other regions, first impacts are seen in Europe & Central Asia Region (UK, Spain, Italy, Turkey, France, Germany, Russia).",
+									title: "Inter-Regional Spread", align: "right"},
+									x: 276, y: 366, dy: -25, dx: 15},
+							{note: {label: "North American(US & Canada), Europe & Central Asia Regions, recorded high confirmed cases in the month of Apr 2020.",
+									title: "Spread to North American Region", align: "left"},
+									x: 415, y: 238, dy: -75, dx: -110},
+							{note: {label: "",
+									title: "", align: "left"},
+									x: 415, y: 219, dy: -57, dx: -110},
+							{note: {label: "Measures to control the spread of Virus through Social distancing & lockdowns started showing positive results.",
+									title: "Social Distancing", align: "Middle"},
+									x: 553, y: 286, dy: 0, dx: -175},
 
-						{note: {label: "Latin America & Caribbean Region(Brazil,Peru, Mexico,..) is highly impacted with the # of confirmed cases raising.",
-														title:  "Highly Impacted Region", align: "right"},
-								x: 691, y: 0, dy: 0, dx: -100},
+							{note: {label: "Latin America & Caribbean Region(Brazil,Peru, Mexico,..) is highly impacted with the # of confirmed cases raising.",
+															title:  "Highly Impacted Region", align: "right"},
+									x: 830, y: 0, dy: 0, dx: -200},
 
-						{note: {label: "North American(US & Canada) recorded a higher onfirmed cases  post lockdown lifting in some US States.",
-														title:  "Raise in cases post lockdown lift", align: "right"},
-								x: 830, y: 197, dy: -10, dx: -70}
+							{note: {label: "North American(US & Canada) recorded a higher onfirmed cases  post lockdown lift.",
+															title:  "Raise in cases post lockdown lift", align: "right"},
+									x: 830, y: 48, dy: 80, dx: -65}
 
 
 
-						]
+							]
 
-						// Add annotation to the chart
-						const makeAnnotations = d3.annotation()
-							.annotations(annotations)
 
-						svg.append("g")
-							.call(makeAnnotations)
+							// Add annotation to the chart
+							const makeAnnotations = d3.annotation()
+								.annotations(annotations)
+
+							svg.append("g")
+								.call(makeAnnotations)
+
+						break;
+						case 'Confirmed_t':
+							svg.append("rect")
+								.attr("x", 250)
+								.attr("y", 0)
+								.attr("width", 420)
+								.attr("height", 130)
+								.attr("fill", "grey")
+								.attr("fill-opacity", 0.01)
+
+							svg.append("text")
+								.attr("font-size", "12px")
+								.html(
+								"<tspan x='260' dy='1.2em'>Higher cummulative confirmed cases in</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - Latin America & Caribbean - Brazil, Mexico, Peru, Chile</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - North America - US, Canada</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - Europe & Central Asia - UK, Spain,Italy, Turkey, France, Germany, Russia</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>Confirmed cases started raising in"
+      							 + "<tspan x='260' dy='1.5em'> - South Asia - India, Pakistan</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - Middle East & North Africa</tspan>"
+      							 )
+      					break;
+						case 'Deaths':
+							svg.append("rect")
+								.attr("x", 500)
+								.attr("y", 0)
+								.attr("width", 300)
+								.attr("height", 110)
+								.attr("fill", "grey")
+								.attr("fill-opacity", 0.01)
+
+							svg.append("text")
+								.attr("font-size", "12px")
+								.html(
+								"<tspan x='510' dy='1.2em'>Monthly new deaths trending downward in </tspan>"
+      							 + "<tspan x='510' dy='1.5em'> - Europe & Central Asia </tspan>"
+      							 + "<tspan x='510' dy='1.5em'> - North America </tspan>"
+      							 + "<tspan x='510' dy='1.5em'>Monthly new deaths raising in</tspan>"
+      							 + "<tspan x='510' dy='1.5em'> - South Asia, Latin America & Caribbean</tspan>"
+      							 + "<tspan x='510' dy='1.5em'> - Middle East & North Africa</tspan>"
+      							 )
+      						break;
+      						case 'Deaths_t':
+							svg.append("rect")
+								.attr("x", 25)
+								.attr("y", 280)
+								.attr("width", 250)
+								.attr("height", 100)
+								.attr("fill", "grey")
+								.attr("fill-opacity", 0.01)
+
+							svg.append("text")
+								.attr("font-size", "12px")
+								.html(
+								"<tspan x='35', y='280' dy='1.5em'>Higher cummulative deaths in </tspan>"
+								 + "<tspan x='35' y='300' dy='1.5em'> - Europe & Central Asia </tspan>"
+								 + "<tspan x='35' y='320' dy='1.5em'> - North America </tspan>"
+								 + "<tspan x='35' y='340' dy='1.5em'> - Latin America & Caribbean</tspan>"
+								 )
+							break;
+      						case 'Recovered':
+							svg.append("rect")
+								.attr("x", 250)
+								.attr("y", 0)
+								.attr("width", 420)
+								.attr("height", 110)
+								.attr("fill", "grey")
+								.attr("fill-opacity", 0.01)
+
+							svg.append("text")
+								.attr("font-size", "12px")
+								.html(
+								"<tspan x='260' dy='1.2em'>Monthly recovery cases raising in</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - Latin America & Caribbean - Brazil, Mexico, Peru, Chile</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - North America - US, Canada</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - South Asia - India, Pakistan</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - Middle East & North Africa - Iran, Saudi Arabia</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - Sub-Saharan Africa</tspan>"
+      							 )
+							break;
+      						case 'Recovered_t':
+							svg.append("rect")
+								.attr("x", 250)
+								.attr("y", 0)
+								.attr("width", 420)
+								.attr("height", 110)
+								.attr("fill", "grey")
+								.attr("fill-opacity", 0.01)
+
+							svg.append("text")
+								.attr("font-size", "12px")
+								.html(
+								"<tspan x='260' dy='1.2em'>Cummulative recovery cases raising in most world regions</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - Latin America & Caribbean - Brazil, Mexico, Peru, Chile</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - North America - US, Canada</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - South Asia - India, Pakistan</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - Middle East & North Africa - Iran, Saudi Arabia</tspan>"
+      							 + "<tspan x='260' dy='1.5em'> - Sub-Saharan Africa</tspan>"
+      							 )
+
+						}
 
 						// Add the X Axis
 						svg.append("g")
@@ -359,7 +607,7 @@
 						svg.append("text")
 							.attr("transform", "translate(" + (width / 2) + " ," + (-35 + height + margin.bottom) + ")")
 							.attr("class", "label")
-							.text("Month");
+							.text("END OF EACH MONTH");
 
 						// Add the Y Axis
 						svg.append("g")
@@ -372,351 +620,75 @@
 							.attr("x", 0 - (height / 2))
 							.attr("dy", "1em")
 							.attr("class", "label")
-							.text("NEW CONFIRMED CASES");
+							.text(data_conf[0]);
 					});
 				});
 			};
 
 
-			// Handle Deaths button click
-			function deathsData() {
-				svg.selectAll("*").remove();
+			// Annotations
+			const annotations_nc = [
+			{note: {label: "Started in Wuhan, China(East Asia & Pacific Region) in late 2019. Named as Covid-19, the virus spread quickly and crossed regional boundaries. Agressive measures taken later locally, contained regional spread",
+					title: "Covid Outbreak", align: "left"},
+					x: 0, y: 500, dy: -50, dx: 20},
+			{note: {label: "International travel spread the Virus to other regions, first impacts are seen in Europe & Central Asia Region (UK, Spain, Italy, Turkey, France, Germany, Russia).",
+					title: "Inter-Regional Spread", align: "right"},
+					x: 276, y: 366, dy: -25, dx: 15},
+			{note: {label: "North American(US & Canada), Europe & Central Asia Regions, recorded high confirmed cases in the month of Apr 2020.",
+					title: "Spread to North American Region", align: "left"},
+					x: 415, y: 238, dy: -75, dx: -110},
+			{note: {label: "",
+					title: "", align: "left"},
+					x: 415, y: 219, dy: -57, dx: -110},
+			{note: {label: "Measures to control the spread of Virus through Social distancing & lockdowns started showing positive results.",
+					title: "Social Distancing", align: "Middle"},
+					x: 553, y: 286, dy: 0, dx: -175},
 
-				// Get the data again
-				d3.csv("data/covid.csv")
-				.then(function(data) {
-					data.forEach(function(d) {
-						d.Month = d.Month;
-						d.Confirmed = +d.Confirmed;
-						d.Deaths = +d.Deaths
-						d.Recovered = +d.Recovered
-					});
+			{note: {label: "Latin America & Caribbean Region(Brazil,Peru, Mexico,..) is highly impacted with the # of confirmed cases raising.",
+											title:  "Highly Impacted Region", align: "right"},
+					x: 830, y: 0, dy: 0, dx: -200},
 
-				// Scale the range of data
-				x.domain(d3.extent(data, function(d) { return d.Month; }));
-				y.domain([0, d3.max(data, function(d) { return d.Deaths; })]);
-
-				// Nest the entries by Region
-				var dataNest = d3.nest()
-					.key(function(d) {return d.Region;})
-					.entries(data);
-
-					// Loop through each symbol/key
-					dataNest.forEach(function(d,i) {
-						svg.append("path")
-							.attr("class", "line")
-							.style("stroke", function() {
-							   return d.color = color(d.key); })
-							.attr("id", 'tag'+d.key.replace(/[\s\&]+/g, ''))
-							.attr("d", deathline(d.values));
-
-						// Add points with tooltips
-						svg.selectAll("dot")
-							.data(data)
-						.enter().append("circle")
-							.attr("r", 3.5)
-							.attr("cx", function(d) { return x(d.Month); })
-							.attr("cy", function(d) { return y(d.Deaths); })
-							.style("fill", "grey")
-							.on("mouseover", function(d) {
-								d3.select(this)
-									.attr("r", 8)
-        							.style("fill", "purple");
-								div.transition()
-									.duration(200)
-									.style("opacity", 0.9);
-								div.html(
-										"Region: " + d.Region + "<br/>" +
-										"Month: " + d.Month + "<br/>" +
-										"Confirmed: " + d.Confirmed + " <br/>" +
-										"Deaths: " + d.Deaths + "<br/>" +
-										"Recovered: " + d.Recovered)
-									.style("left", (d3.event.pageX) + "px")
-									.style("top", (d3.event.pageY - 28) + "px");
-							})
-							.on("mouseout", function(d) {
-								d3.select(this)
-									.attr("r", 3.5)
-        							.style("fill", "grey");
-								div.transition()
-									.duration(500)
-									.style("opacity", 0);
-							});
-
-						// Add Legend
-						svg.append("text")
-							.attr("x", 25)
-							.attr("y", 20)
-							.attr("class", "legend")
-							.text("LEGEND - WORLD REGIONS")
-
-						svg.append("line")
-							.attr("x1", 25)
-							.attr("x2", 45)
-							.attr("y1", 40 + i * 20)
-							.attr("y2", 40 + i * 20)
-							.style("stroke-width", 3)
-							.style("stroke", function() {
-								return d.color = color(d.key); })
-							.on("click", function(){
-								var active   = d.active ? false : true,
-								newOpacity = active ? 0.10 : 1;
-								d3.select("#tag"+d.key.replace(/[\s\&]+/g, ''))
-									.transition().duration(100)
-									.style("opacity", newOpacity);
-								d.active = active;
-								});
-
-						var active = true;
-						svg.append("text")
-							.attr("x", 55)
-							.attr("y", 46 + i * 20)
-							.attr("class", "legend")
-							.style("fill", function() {
-								return d.color = color(d.key); })
-							.on("click", function(){
-							    active   = d.active ? false : true;
-								// alert("test"+d.active);
-								newOpacity = active ? 0.10 : 1;
-								// alert("#tag"+d.key.replace(/[\s\&]+/g, ''));
-								d3.select("#tag"+d.key.replace(/[\s\&]+/g, ''))
-									.transition().duration(100)
-									.style("opacity", newOpacity);
-								// alert(active);
-								d.active = active;
-								})
-							.text(d.key);
-
-						// Add Annotations
-						svg.append("rect")
-							.attr("x", 500)
-							.attr("y", 0)
-							.attr("width", 300)
-							.attr("height", 100)
-							.attr("fill", "grey")
-							.attr("fill-opacity", 0.05)
-
-						svg.append("text")
-							.attr("x", 510)
-							.attr("y", 20)
-							.attr("font-size", "14px")
-							.text("The sudden raise in new cases, reaching")
-						svg.append("text")
-							.attr("x", 510)
-							.attr("y", 40)
-							.attr("font-size", "14px")
-							.text("limits on hospital capacity resulted in higher,")
-						svg.append("text")
-							.attr("x", 510)
-							.attr("y",60)
-							.attr("font-size", "14px")
-							.text("Deaths in Europe & Central Asia in Apr 2020 ")
-						svg.append("text")
-							.attr("x", 510)
-							.attr("y", 90)
-							.attr("font-size", "14px")
-							.text("Deaths trend downwards in most regions")
+			{note: {label: "North American(US & Canada) recorded a higher onfirmed cases  post lockdown lift.",
+											title:  "Raise in cases post lockdown lift", align: "right"},
+					x: 830, y: 48, dy: 80, dx: -65}
 
 
-						// Add the X Axis
-						svg.append("g")
-							.attr("class", "axis text")
-							.attr("transform", "translate(0," + height + ")")
-							.call(xAxis);
 
-						svg.append("text")
-							.attr("transform", "translate(" + (width / 2) + " ," + (-35 + height + margin.bottom) + ")")
-							.attr("class", "label")
-							.text("Month");
-
-						// Add the Y Axis
-						svg.append("g")
-							.attr("class", "axis text")
-							.call(yAxis);
-
-						svg.append("text")
-							.attr("transform", "rotate(-90)")
-							.attr("y", -80)
-							.attr("x", 0 - (height / 2))
-							.attr("dy", "1em")
-							.attr("class", "label")
-							.text("TOTAL DEATHS");
-					});
-				});
-			};
-
-			// Handle Recovered button click
-			function recoveredData() {
-				svg.selectAll("*").remove();
-
-				// Get the data again
-				d3.csv("data/covid.csv")
-				.then(function(data) {
-					data.forEach(function(d) {
-						d.Month = d.Month;
-						d.Confirmed = +d.Confirmed;
-						d.Deaths = +d.Deaths
-						d.Recovered = +d.Recovered
-					});
-
-				// Scale the range of data
-				x.domain(d3.extent(data, function(d) { return d.Month; }));
-				y.domain([0, d3.max(data, function(d) { return d.Recovered; })]);
-
-				// Nest the entries by Region
-				var dataNest = d3.nest()
-					.key(function(d) {return d.Region;})
-					.entries(data);
-
-					// Loop through each symbol/key
-					dataNest.forEach(function(d,i) {
-						svg.append("path")
-							.attr("class", "line")
-							.style("stroke", function() {
-							   return d.color = color(d.key); })
-							.attr("id", 'tag'+d.key.replace(/[\s\&]+/g, ''))
-							.attr("d", recoveredline(d.values));
-
-						// Add points with tooltips
-						svg.selectAll("dot")
-							.data(data)
-						.enter().append("circle")
-							.attr("r", 3.5)
-							.attr("cx", function(d) { return x(d.Month); })
-							.attr("cy", function(d) { return y(d.Recovered); })
-							.style("fill", "grey")
-							.on("mouseover", function(d) {
-								d3.select(this)
-									.attr("r", 8)
-        							.style("fill", "purple");
-								div.transition()
-									.duration(200)
-									.style("opacity", 0.9);
-								div.html(
-										"Region: " + d.Region + "<br/>" +
-										"Month: " + d.Month + "<br/>" +
-										"Confirmed: " + d.Confirmed + " <br/>" +
-										"Deaths: " + d.Deaths + "<br/>" +
-										"Recovered: " + d.Recovered)
-									.style("left", (d3.event.pageX) + "px")
-									.style("top", (d3.event.pageY - 28) + "px");
-							})
-							.on("mouseout", function(d) {
-								d3.select(this)
-									.attr("r", 3.5)
-        							.style("fill", "grey");
-								div.transition()
-									.duration(500)
-									.style("opacity", 0);
-							});
-
-						// Add Legend
-						svg.append("text")
-							.attr("x", 25)
-							.attr("y", 20)
-							.attr("class", "legend")
-							.text("LEGEND - WORLD REGIONS")
-
-						svg.append("line")
-							.attr("x1", 25)
-							.attr("x2", 45)
-							.attr("y1", 40 + i * 20)
-							.attr("y2", 40 + i * 20)
-							.style("stroke-width", 3)
-							.style("stroke", function() {
-								return d.color = color(d.key); })
-							.on("click", function(){
-								var active   = d.active ? false : true,
-								newOpacity = active ? 0.10 : 1;
-								d3.select("#tag"+d.key.replace(/[\s\&]+/g, ''))
-									.transition().duration(100)
-									.style("opacity", newOpacity);
-								d.active = active;
-								});
-
-						var active = true;
-						svg.append("text")
-							.attr("x", 55)
-							.attr("y", 46 + i * 20)
-							.attr("class", "legend")
-							.style("fill", function() {
-								return d.color = color(d.key); })
-							.on("click", function(){
-							    active   = d.active ? false : true;
-								// alert("test"+d.active);
-								newOpacity = active ? 0.10 : 1;
-								// alert("#tag"+d.key.replace(/[\s\&]+/g, ''));
-								d3.select("#tag"+d.key.replace(/[\s\&]+/g, ''))
-									.transition().duration(100)
-									.style("opacity", newOpacity);
-								// alert(active);
-								d.active = active;
-								})
-							.text(d.key);
-
-						// Add Annotations
-						svg.append("rect")
-							.attr("x", 250)
-							.attr("y", 0)
-							.attr("width", 300)
-							.attr("height", 110)
-							.attr("fill", "grey")
-							.attr("fill-opacity", 0.05)
-
-						svg.append("text")
-							.attr("x", 260)
-							.attr("y", 20)
-							.attr("font-size", "14px")
-							.text("Recovery trend is in propotion with the new ")
-						svg.append("text")
-							.attr("x", 260)
-							.attr("y", 40)
-							.attr("font-size", "14px")
-							.text("cases recorded, Most Regions are recovering")
-						svg.append("text")
-							.attr("x", 260)
-							.attr("y",60)
-							.attr("font-size", "14px")
-							.text("well")
-						svg.append("text")
-							.attr("x", 260)
-							.attr("y", 80)
-							.attr("font-size", "14px")
-							.text("Necessary levels for herd immunity yet to be")
-						svg.append("text")
-							.attr("x", 260)
-							.attr("y", 100)
-							.attr("font-size", "14px")
-							.text("attained")
+]
 
 
-						// Add the X Axis
-						svg.append("g")
-							.attr("class", "axis text")
-							.attr("transform", "translate(0," + height + ")")
-							.call(xAxis);
-
-						svg.append("text")
-							.attr("transform", "translate(" + (width / 2) + " ," + (-35 + height + margin.bottom) + ")")
-							.attr("class", "label")
-							.text("Month");
-
-						// Add the Y Axis
-						svg.append("g")
-							.attr("class", "axis text")
-							.call(yAxis);
-
-						svg.append("text")
-							.attr("transform", "rotate(-90)")
-							.attr("y", -80)
-							.attr("x", 0 - (height / 2))
-							.attr("dy", "1em")
-							.attr("class", "label")
-							.text("TOTAL RECOVERED CASES");
-					});
-				});
-			};
-		</script>
+			// When the button is changed, run the updateChart function
+			d3.select("#selectButton").on("change", function(d) {
+				// recover the option that has been chosen
+				var selectedOption = d3.select(this).property("value")
+				// run the updateChart function with this selected option
+				switch (selectedOption) {
+				  case 'New Confirmed Cases':
+				    var data_arr = ['New Confirmed Cases', 'New Confirmed Cases', 'Cummulative Confirmed Cases', 'Confirmed'];
+					trendData(data_arr);
+					break;
+				  case 'Cummulative Confirmed Cases':
+				    var data_arr = ['Cummulative Confirmed Cases', 'New Confirmed Cases', 'Cummulative Confirmed Cases', 'Confirmed_t'];
+					trendData(data_arr);
+					break;
+				  case 'New Deaths':
+					var data_arr = ['New Deaths', 'New Deaths', 'Cummulative Deaths', 'Deaths'];
+					trendData(data_arr);
+					break;
+				  case 'Cummulative Deaths':
+					var data_arr = ['Cummulative Deaths', 'New Deaths', 'Cummulative Deaths', 'Deaths_t'];
+					trendData(data_arr);
+					break;
+				  case 'New Recovered Cases':
+					var data_arr = ['New Recovered Cases', 'New Recovered Cases', 'Cummulative Recovered Cases', 'Recovered'];
+					trendData(data_arr);
+					break;
+				  case 'Cummulative Recovered Cases':
+					var data_arr = ['Cummulative Recovered Cases', 'New Recovered Cases', 'Cummulative Recovered Cases', 'Recovered_t'];
+					trendData(data_arr);
+				 }
+			 })
+	</script>
 
 
 	</div>
@@ -724,8 +696,8 @@
 	<div class="container-fluid">
 		<h4><strong>Conclusion:</strong></h4>
 		<p>
-		What started in a seafood market (Huanan Seafood Wholesale Market), identified as a suspected center, had far reaching impacts and are far from over.<br>
-		The Economic impacts are just being felt in the world regions and will have a long tail
+		What started in a seafood market (Huanan Seafood Wholesale Market), identified as a suspected center, had far reaching impacts, the direct health impacts so far recorded are huge and are far from over.<br>
+		The Economic impacts are just being felt in most world regions and their effects will be long-lasting
 		</p>
 	</div>
 
