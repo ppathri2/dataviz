@@ -123,9 +123,9 @@
 		<h6><strong>Report Trends:</strong></h6>
 		<p> Below report show the reader the following trends
 					<ol  style="font-size:14px">
-					<li><strong>Trend of Covid-19 Confirmed cases by Month - New each month or cummulative </strong></li>
-					<li><strong>Trend of Covid-19 Deaths by Month - New each month or cummulative</strong></li>
-					<li><strong>Trend of Covid-19 Recovered cases by Month - New each month or cummulative</strong></li>
+					<li><strong>Trend of Covid-19 Confirmed cases by Month - New each month or cumulative </strong></li>
+					<li><strong>Trend of Covid-19 Deaths by Month - New each month or cumulative</strong></li>
+					<li><strong>Trend of Covid-19 Recovered cases by Month - New each month or cumulative</strong></li>
 
 			</ol>
 			<font color="red" size ="2">Reader can click on the buttons below, select from dropdown, to view the repsective covid-19 trend. Filter by clicking on the legend or mouseover datapoint to view additional details</font>
@@ -141,19 +141,19 @@
 					type="button"
 					class ="btn btn-info"
 					value="Confirmed"
-					onclick="trendData(['New Confirmed Cases', 'New Confirmed Cases', 'Cummulative Confirmed Cases', 'Confirmed'])" />
+					onclick="trendData(['New Confirmed Cases', 'New Confirmed Cases', 'Cumulative Confirmed Cases', 'Confirmed'])" />
 
 			<input name="DeathsButton"
 					type="button"
 					class ="btn btn-info"
 					value="Deaths"
-					onclick="trendData(['New Deaths', 'New Deaths', 'Cummulative Deaths', 'Deaths'])" />
+					onclick="trendData(['New Deaths', 'New Deaths', 'Cumulative Deaths', 'Deaths'])" />
 
 			<input name="RecoveredButton"
 					type="button"
 					class ="btn btn-info"
 					value="Recovered"
-					onclick="trendData(['New Recovered Cases', 'New Recovered Cases', 'Cummulative Recovered Cases', 'Recovered'])" />
+					onclick="trendData(['New Recovered Cases', 'New Recovered Cases', 'Cumulative Recovered Cases', 'Recovered'])" />
 
 			&emsp;<select id="selectButton"></select>&emsp;&emsp;&emsp;<span >  </span>
 
@@ -206,7 +206,7 @@
 				.y(function(d) { return y(d.Deaths); })
 				.curve(d3.curveMonotoneX);
 
-			// Define No of Deaths Line (Cummulative Deaths)
+			// Define No of Deaths Line (Cumulative Deaths)
 			var deathline_t = d3.line()
 				.x(function(d) { return x(d.Month); })
 				.y(function(d) { return y(d.Deaths_t); })
@@ -220,7 +220,7 @@
 				.curve(d3.curveMonotoneX);
 
 
-			// Define Recovery Cases Line (Cummulative Recovered Cases)
+			// Define Recovery Cases Line (Cumulative Recovered Cases)
 			var recoveredline_t = d3.line()
 				.x(function(d) { return x(d.Month); })
 				.y(function(d) { return y(d.Recovered_t); })
@@ -257,7 +257,7 @@
 			var parseDate = d3.timeParse("%B");
 
 			// Default load Covid Data
-			var data_arr = ['New Confirmed Cases', 'New Confirmed Cases', 'Cummulative Confirmed Cases', 'Confirmed'];
+			var data_arr = ['New Confirmed Cases', 'New Confirmed Cases', 'Cumulative Confirmed Cases', 'Confirmed'];
 			trendData(data_arr);
 			scene = 1;
 
@@ -396,7 +396,7 @@
 								div.html(
 										"Region: " + d.Region + "<br/>" +
 										"New Cases in " + tmonth[d.Month-1] + " : Confirmed - " + d.Confirmed + ", Deaths - " + d.Deaths + ", Recovered - " + d.Recovered + " <br/>" +
-										"Cummulative Cases by end of " + tmonth[d.Month-1] + " : Confirmed - " + d.Confirmed_tm + ", Deaths - " + d.Deaths_t + ", Recovered - " + d.Recovered_t + " <br/>" +
+										"Cumulative Cases by end of " + tmonth[d.Month-1] + " : Confirmed - " + d.Confirmed_tm + ", Deaths - " + d.Deaths_t + ", Recovered - " + d.Recovered_t + " <br/>" +
 										"Most Impacted Countries: " + d.Countries)
 									.style("left", (d3.event.pageX) + "px")
 									.style("top", (d3.event.pageY - 28) + "px");
@@ -509,7 +509,7 @@
 							svg.append("text")
 								.attr("font-size", "12px")
 								.html(
-								"<tspan x='260' dy='1.2em'>Higher cummulative confirmed cases in</tspan>"
+								"<tspan x='260' dy='1.2em'>Higher cumulative confirmed cases in</tspan>"
       							 + "<tspan x='260' dy='1.5em'> - Latin America & Caribbean - Brazil, Mexico, Peru, Chile</tspan>"
       							 + "<tspan x='260' dy='1.5em'> - North America - US, Canada</tspan>"
       							 + "<tspan x='260' dy='1.5em'> - Europe & Central Asia - UK, Spain,Italy, Turkey, France, Germany, Russia</tspan>"
@@ -550,7 +550,7 @@
 							svg.append("text")
 								.attr("font-size", "12px")
 								.html(
-								"<tspan x='35', y='280' dy='1.5em'>Higher cummulative deaths in </tspan>"
+								"<tspan x='35', y='280' dy='1.5em'>Higher cumulative deaths in </tspan>"
 								 + "<tspan x='35' y='300' dy='1.5em'> - Europe & Central Asia </tspan>"
 								 + "<tspan x='35' y='320' dy='1.5em'> - North America </tspan>"
 								 + "<tspan x='35' y='340' dy='1.5em'> - Latin America & Caribbean</tspan>"
@@ -588,7 +588,7 @@
 							svg.append("text")
 								.attr("font-size", "12px")
 								.html(
-								"<tspan x='260' dy='1.2em'>Cummulative recovery cases raising in most world regions</tspan>"
+								"<tspan x='260' dy='1.2em'>Cumulative recovery cases raising in most world regions</tspan>"
       							 + "<tspan x='260' dy='1.5em'> - Latin America & Caribbean - Brazil, Mexico, Peru, Chile</tspan>"
       							 + "<tspan x='260' dy='1.5em'> - North America - US, Canada</tspan>"
       							 + "<tspan x='260' dy='1.5em'> - South Asia - India, Pakistan</tspan>"
@@ -664,27 +664,27 @@
 				// run the updateChart function with this selected option
 				switch (selectedOption) {
 				  case 'New Confirmed Cases':
-				    var data_arr = ['New Confirmed Cases', 'New Confirmed Cases', 'Cummulative Confirmed Cases', 'Confirmed'];
+				    var data_arr = ['New Confirmed Cases', 'New Confirmed Cases', 'Cumulative Confirmed Cases', 'Confirmed'];
 					trendData(data_arr);
 					break;
-				  case 'Cummulative Confirmed Cases':
-				    var data_arr = ['Cummulative Confirmed Cases', 'New Confirmed Cases', 'Cummulative Confirmed Cases', 'Confirmed_t'];
+				  case 'Cumulative Confirmed Cases':
+				    var data_arr = ['Cumulative Confirmed Cases', 'New Confirmed Cases', 'Cumulative Confirmed Cases', 'Confirmed_t'];
 					trendData(data_arr);
 					break;
 				  case 'New Deaths':
-					var data_arr = ['New Deaths', 'New Deaths', 'Cummulative Deaths', 'Deaths'];
+					var data_arr = ['New Deaths', 'New Deaths', 'Cumulative Deaths', 'Deaths'];
 					trendData(data_arr);
 					break;
-				  case 'Cummulative Deaths':
-					var data_arr = ['Cummulative Deaths', 'New Deaths', 'Cummulative Deaths', 'Deaths_t'];
+				  case 'Cumulative Deaths':
+					var data_arr = ['Cumulative Deaths', 'New Deaths', 'Cumulative Deaths', 'Deaths_t'];
 					trendData(data_arr);
 					break;
 				  case 'New Recovered Cases':
-					var data_arr = ['New Recovered Cases', 'New Recovered Cases', 'Cummulative Recovered Cases', 'Recovered'];
+					var data_arr = ['New Recovered Cases', 'New Recovered Cases', 'Cumulative Recovered Cases', 'Recovered'];
 					trendData(data_arr);
 					break;
-				  case 'Cummulative Recovered Cases':
-					var data_arr = ['Cummulative Recovered Cases', 'New Recovered Cases', 'Cummulative Recovered Cases', 'Recovered_t'];
+				  case 'Cumulative Recovered Cases':
+					var data_arr = ['Cumulative Recovered Cases', 'New Recovered Cases', 'Cumulative Recovered Cases', 'Recovered_t'];
 					trendData(data_arr);
 				 }
 			 })
