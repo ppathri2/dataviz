@@ -103,7 +103,7 @@
 	</div>
 
 	<div class="container-fluid">
-		<h4><strong>Monthly Trend of new Coronavirus cases</strong></h4>
+		<h4><strong>Monthly Trend of Coronavirus cases</strong></h4>
 		<p> Coronavirus had its origin in <b>East Asia & Pacific</b> World Region, in Wuhan, a city in Central China.
 		This Virus spread quickly to all the other World Regions. It's impact is seen today in almost 253 countries across the World.
 		</p>
@@ -120,8 +120,8 @@
 
 		</br>
 
-		<h6><strong>Report Trends:</strong></h6>
-		<p> Below report show the reader the following trends
+		<h6><strong>Covid -19 Reports:</strong></h6>
+		<p> Below views show the reader the following Trends
 					<ol  style="font-size:14px">
 					<li><strong>Trend of Covid-19 Confirmed cases by Month - New each month or cumulative </strong></li>
 					<li><strong>Trend of Covid-19 Deaths by Month - New each month or cumulative</strong></li>
@@ -179,7 +179,7 @@
 
 
 			// Define Axes
-			var tickLabels = ['1/31','2/29','3/31','4/30','5/31','6/30','7/26']
+			var tickLabels = ['1/31','2/29','3/31','4/30','5/31','6/30','7/30']
 			var xAxis = d3.axisBottom().scale(x).ticks(7).tickFormat(function(d,i){return tickLabels[i];});
 			var yAxis = d3.axisLeft().scale(y).ticks(15);
 
@@ -234,7 +234,7 @@
 			// SVG Canvas
 			var svg = d3.select("body")
 				.append("svg")
-					.attr("width", width + margin.left + margin.right)
+					.attr("width", width + margin.left + margin.right+150)
 					.attr("height", height + margin.top + margin.bottom)
 				.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -465,16 +465,14 @@
 									x: 0, y: 500, dy: -50, dx: 20},
 							{note: {label: "International travel spread the Virus to other regions, first impacts are seen in Europe & Central Asia Region (UK, Spain, Italy, Turkey, France, Germany, Russia).",
 									title: "Inter-Regional Spread", align: "right"},
-									x: 276, y: 366, dy: -25, dx: 15},
-							{note: {label: "North American(US & Canada), Europe & Central Asia Regions, recorded high confirmed cases in the month of Apr 2020.",
-									title: "Spread to North American Region", align: "left"},
-									x: 415, y: 238, dy: -75, dx: -110},
-							{note: {label: "",
-									title: "", align: "left"},
-									x: 415, y: 219, dy: -57, dx: -110},
+									x: 276, y: 387, dy: -25, dx: 15},
+							{note: {label: "Europe & Central Asia Region, recorded higher confirmed cases in the month of Apr 2020.",
+									title: "Europe & Central Asia Region - Peak", align: "left"},
+									x: 415, y: 264, dy: -75, dx: -110},
+
 							{note: {label: "Measures to control the spread of Virus through Social distancing & lockdowns started showing positive results.",
 									title: "Social Distancing", align: "Middle"},
-									x: 553, y: 286, dy: 0, dx: -175},
+									x: 553, y: 319, dy: 0, dx: -188},
 
 							{note: {label: "Latin America & Caribbean Region(Brazil,Peru, Mexico,..) is highly impacted with the # of confirmed cases raising.",
 															title:  "Highly Impacted Region", align: "right"},
@@ -482,7 +480,11 @@
 
 							{note: {label: "North American(US & Canada) recorded a higher onfirmed cases  post lockdown lift.",
 															title:  "Raise in cases post lockdown lift", align: "right"},
-									x: 830, y: 48, dy: 80, dx: -65}
+									x: 830, y: 58, dy: 0, dx: 130},
+
+							{note: {label: "New confirmed cases increasing rapidly in South Asia(India, Pakistan, Bangladesh,..)",
+															title:  "Increase in South Asia", align: "right"},
+									x: 830, y: 213, dy: 0, dx: 130}
 
 
 
@@ -510,12 +512,12 @@
 								.attr("font-size", "12px")
 								.html(
 								"<tspan x='260' dy='1.2em'>Higher cumulative confirmed cases in</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - Latin America & Caribbean - Brazil, Mexico, Peru, Chile</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - North America - US, Canada</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - Europe & Central Asia - UK, Spain,Italy, Turkey, France, Germany, Russia</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- Latin America & Caribbean - Brazil, Mexico, Peru, Chile</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- North America - US, Canada</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- Europe & Central Asia - UK, Spain,Italy, Turkey, France, Germany, Russia</tspan>"
       							 + "<tspan x='260' dy='1.5em'>Confirmed cases started raising in"
-      							 + "<tspan x='260' dy='1.5em'> - South Asia - India, Pakistan</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - Middle East & North Africa</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- South Asia - India, Pakistan</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- Middle East & North Africa</tspan>"
       							 )
       					break;
 						case 'Deaths':
@@ -523,7 +525,7 @@
 								.attr("x", 500)
 								.attr("y", 0)
 								.attr("width", 300)
-								.attr("height", 110)
+								.attr("height", 150)
 								.attr("fill", "grey")
 								.attr("fill-opacity", 0.01)
 
@@ -531,11 +533,13 @@
 								.attr("font-size", "12px")
 								.html(
 								"<tspan x='510' dy='1.2em'>Monthly new deaths trending downward in </tspan>"
-      							 + "<tspan x='510' dy='1.5em'> - Europe & Central Asia </tspan>"
-      							 + "<tspan x='510' dy='1.5em'> - North America </tspan>"
-      							 + "<tspan x='510' dy='1.5em'>Monthly new deaths raising in</tspan>"
-      							 + "<tspan x='510' dy='1.5em'> - South Asia, Latin America & Caribbean</tspan>"
-      							 + "<tspan x='510' dy='1.5em'> - Middle East & North Africa</tspan>"
+      							 + "<tspan x='510' dy='1.5em'>- Europe & Central Asia </tspan>"
+      							 + "<tspan x='510' dy='1.5em'>Monthly new deaths increasing in all other regions</tspan>"
+      							 + "<tspan x='510' dy='1.5em'>- North America </tspan>"
+      							 + "<tspan x='510' dy='1.5em'>- South Asia, Latin America & Caribbean</tspan>"
+      							 + "<tspan x='510' dy='1.5em'>- Middle East & North Africa</tspan>"
+      							 + "<tspan x='510' dy='1.5em'>- Sub-Saharan Africa</tspan>"
+      							 + "<tspan x='510' dy='1.5em'>- East Asia & Pacific</tspan>"
       							 )
       						break;
       						case 'Deaths_t':
@@ -551,9 +555,9 @@
 								.attr("font-size", "12px")
 								.html(
 								"<tspan x='35', y='280' dy='1.5em'>Higher cumulative deaths in </tspan>"
-								 + "<tspan x='35' y='300' dy='1.5em'> - Europe & Central Asia </tspan>"
-								 + "<tspan x='35' y='320' dy='1.5em'> - North America </tspan>"
-								 + "<tspan x='35' y='340' dy='1.5em'> - Latin America & Caribbean</tspan>"
+								 + "<tspan x='35' y='300' dy='1.5em'>- Europe & Central Asia </tspan>"
+								 + "<tspan x='35' y='320' dy='1.5em'>- North America </tspan>"
+								 + "<tspan x='35' y='340' dy='1.5em'>- Latin America & Caribbean</tspan>"
 								 )
 							break;
       						case 'Recovered':
@@ -561,19 +565,20 @@
 								.attr("x", 250)
 								.attr("y", 0)
 								.attr("width", 420)
-								.attr("height", 110)
+								.attr("height", 130)
 								.attr("fill", "grey")
 								.attr("fill-opacity", 0.01)
 
 							svg.append("text")
 								.attr("font-size", "12px")
 								.html(
-								"<tspan x='260' dy='1.2em'>Monthly recovery cases raising in</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - Latin America & Caribbean - Brazil, Mexico, Peru, Chile</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - North America - US, Canada</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - South Asia - India, Pakistan</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - Middle East & North Africa - Iran, Saudi Arabia</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - Sub-Saharan Africa</tspan>"
+								"<tspan x='260' dy='1.2em'>Monthly recovery cases raising in all regions</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- Latin America & Caribbean - Brazil, Mexico, Peru, Chile</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- North America - US, Canada</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- South Asia - India, Pakistan</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- Middle East & North Africa - Iran, Saudi Arabia</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- Sub-Saharan Africa</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- East Asia & Pacific</tspan>"
       							 )
 							break;
       						case 'Recovered_t':
@@ -589,11 +594,11 @@
 								.attr("font-size", "12px")
 								.html(
 								"<tspan x='260' dy='1.2em'>Cumulative recovery cases raising in most world regions</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - Latin America & Caribbean - Brazil, Mexico, Peru, Chile</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - North America - US, Canada</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - South Asia - India, Pakistan</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - Middle East & North Africa - Iran, Saudi Arabia</tspan>"
-      							 + "<tspan x='260' dy='1.5em'> - Sub-Saharan Africa</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- Latin America & Caribbean - Brazil, Mexico, Peru, Chile</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- North America - US, Canada</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- South Asia - India, Pakistan</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- Middle East & North Africa - Iran, Saudi Arabia</tspan>"
+      							 + "<tspan x='260' dy='1.5em'>- Sub-Saharan Africa</tspan>"
       							 )
 
 						}
@@ -624,37 +629,6 @@
 					});
 				});
 			};
-
-
-			// Annotations
-			const annotations_nc = [
-			{note: {label: "Started in Wuhan, China(East Asia & Pacific Region) in late 2019. Named as Covid-19, the virus spread quickly and crossed regional boundaries. Agressive measures taken later locally, contained regional spread",
-					title: "Covid Outbreak", align: "left"},
-					x: 0, y: 500, dy: -50, dx: 20},
-			{note: {label: "International travel spread the Virus to other regions, first impacts are seen in Europe & Central Asia Region (UK, Spain, Italy, Turkey, France, Germany, Russia).",
-					title: "Inter-Regional Spread", align: "right"},
-					x: 276, y: 366, dy: -25, dx: 15},
-			{note: {label: "North American(US & Canada), Europe & Central Asia Regions, recorded high confirmed cases in the month of Apr 2020.",
-					title: "Spread to North American Region", align: "left"},
-					x: 415, y: 238, dy: -75, dx: -110},
-			{note: {label: "",
-					title: "", align: "left"},
-					x: 415, y: 219, dy: -57, dx: -110},
-			{note: {label: "Measures to control the spread of Virus through Social distancing & lockdowns started showing positive results.",
-					title: "Social Distancing", align: "Middle"},
-					x: 553, y: 286, dy: 0, dx: -175},
-
-			{note: {label: "Latin America & Caribbean Region(Brazil,Peru, Mexico,..) is highly impacted with the # of confirmed cases raising.",
-											title:  "Highly Impacted Region", align: "right"},
-					x: 830, y: 0, dy: 0, dx: -200},
-
-			{note: {label: "North American(US & Canada) recorded a higher onfirmed cases  post lockdown lift.",
-											title:  "Raise in cases post lockdown lift", align: "right"},
-					x: 830, y: 48, dy: 80, dx: -65}
-
-
-
-]
 
 
 			// When the button is changed, run the updateChart function
@@ -696,8 +670,8 @@
 	<div class="container-fluid">
 		<h4><strong>Conclusion:</strong></h4>
 		<p>
-		What started in a seafood market (Huanan Seafood Wholesale Market), identified as a suspected center, had far reaching impacts, the direct health impacts so far recorded are huge and are far from over.<br>
-		The Economic impacts are just being felt in most world regions and their effects will be long-lasting
+		What started in a seafood market (Huanan Seafood Wholesale Market), identified as a suspected center, had far reaching impacts, the direct health impacts so far recorded are vast and are far from over.<br>
+		Social and Economic impacts are just being felt in most world regions and their effects will be long endured
 		</p>
 	</div>
 
